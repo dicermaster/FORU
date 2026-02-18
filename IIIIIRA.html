@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Для моей любви</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Segoe UI, sans-serif;
+    text-align:center;
+    color:white;
+    overflow-x:hidden;
+    background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb);
+    background-size:400% 400%;
+    animation:bg 12s ease infinite;
+}
+
+@keyframes bg{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+h1{margin-top:40px;font-size:2.8rem}
+
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    font-size:1.1rem;
+    margin-top:20px;
+}
+
+.message{
+    font-size:1.6rem;
+    min-height:60px;
+    margin-top:20px;
+}
+
+.secret{
+    margin-top:30px;
+    font-size:1.5rem;
+    cursor:pointer;
+    display:none;
+    animation:glow 1.5s infinite alternate;
+}
+
+@keyframes glow{
+    from{text-shadow:0 0 10px white;}
+    to{text-shadow:0 0 25px #ff4da6;}
+}
+
+.cat{
+    width:220px;
+    border-radius:20px;
+    margin:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+.heart{
+    position:fixed;
+    top:-10px;
+    font-size:18px;
+    animation:fall 6s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes fall{
+    to{transform:translateY(110vh)}
+}
+
+/* Envelope */
+.envelope{
+    width:200px;
+    height:120px;
+    background:#fff;
+    margin:40px auto;
+    position:relative;
+    cursor:pointer;
+    transition:0.6s;
+}
+
+.envelope:before{
+    content:"";
+    position:absolute;
+    width:0;
+    height:0;
+    border-left:100px solid transparent;
+    border-right:100px solid transparent;
+    border-bottom:60px solid #ff4da6;
+    top:-60px;
+    left:0;
+    transition:0.6s;
+}
+
+.envelope.open:before{
+    transform:rotateX(180deg);
+    transform-origin:top;
+}
+
+.letter{
+    display:none;
+    color:#ff4da6;
+    padding:15px;
+    font-size:1.2rem;
+}
+
+/* Secret Screen */
+#secretScreen{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:black;
+    color:white;
+    z-index:999;
+    text-align:center;
+    padding-top:20vh;
+}
+
+#timer{
+    font-size:2rem;
+    margin-top:20px;
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Для самой любимой 💖</h1>
+
+<div class="envelope" onclick="openEnvelope(this)">
+<div class="letter" id="letterText">
+Ты — самое лучшее, что со мной случилось ❤️
+</div>
+</div>
+
+<button onclick="showMessage()">Нажми меня ✨</button>
+<div class="message" id="message"></div>
+
+<div class="secret" id="secretButton" onclick="openSecret()">
+нажми на Меня если ты Любишь Диму 💕
+</div>
+
+<img class="cat" src="https://placekitten.com/300/300">
+<img class="cat" src="https://placekitten.com/301/300">
+
+<iframe width="0" height="0"
+src="https://www.youtube.com/embed?listType=search&list=Линочка+Ли+Любить+тебя&autoplay=1"
+allow="autoplay"></iframe>
+
+<div id="secretScreen">
+<h1>Наши первые 3 месяца ❤️</h1>
+<div id="timer"></div>
+<canvas id="fireworks"></canvas>
+</div>
+
+<script>
+
+    /* Письмо */
+function openEnvelope(el){
+    el.classList.toggle("open");
+    document.getElementById("letterText").style.display="block";
+}
+
+/* Сообщения */
+const messages=[
+        "Я-яблоня, ты цветешь так же красиво как и она ✨",
+        "Л-лето, с тобой так же тепло как и летом 💖",
+        "Ю-юбилей, с тобой каждый день как редкий праздник юбилей 😊",
+        "Б-Безподобна, тут даже добавить нечего 💕",
+        "Ю-Юпетер, далеко но как же красива 🥰",
+        "Т-том,ты как новый том в любмой книге, ждешь завтра что бы начать новый 🎁",
+        "Е-Енотик,маленькая милая прям мимими 🤗"
+        "Б-Будущее, которое я хочу постичь"
+        "Я-Ясность ума родом с тобой"
+        "получается вместе-Я Люблю ТЕБЯ💕"
+        "Извини если как-то обижаю или делаю больно"
+        "Да я дурной и иногда не думаю что говорю и как веду себя"
+        "но я очень люблю тебя"
+        "ты самая лучшая у меня,как бы и что не было я всегда рядом"
+        "помни что тебе есть на кого положится"
+        "я чуть подсмотрел музыку с твоего избранного в тг и решил что наверно эта песня будет подходящей"
+        "я безумно скучаю по тебе, правда"
+        "я так хочу быть рядом с тобой"
+        "извини если навязываюсь или требую много внимания"
+        "я очень тебя люблю и хочу что бы ты была уверенна во мне"
+        "Ты у меня самая лучшая солнышко, я очень не хочу что бы ты грустила"
+        "Я хочу что бы ты знала что ты очень мне дорога и я думаю о тебе постоянно"
+        "ты невероятна и я рад что ты моя"
+        "ты самая лучшая у меня правда"
+        "ты безконечно дорога и не проходит и минуты ни секунды без мысли о тебе"
+        "извини если я не такой какого ты ххотела или о котором мечтала"
+        "но я постораюсь сделать все что в моих силах"
+        "что бы ты была самой счастливой"
+        "я люблю тебя и только тебя💖"
+        ];
+
+let index=0;
+
+function typeWriter(text,element){
+    element.innerHTML="";
+    let i=0;
+    let interval=setInterval(()=>{
+            element.innerHTML+=text.charAt(i);
+    i++;
+    if(i>=text.length)clearInterval(interval);
+},40);
+}
+
+function showMessage(){
+const box=document.getElementById("message");
+
+    if(index < messages.length){
+        typeWriter(messages[index],box);
+        index++;
+        if(index === messages.length){
+            document.getElementById("secretButton").style.display="block";
+        }
+    }
+}
+
+/* Сердечки */
+function createHeart(){
+const heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerText="💗";
+    heart.style.left=Math.random()*window.innerWidth+"px";
+    heart.style.animationDuration=(4+Math.random()*3)+"s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),7000);
+}
+setInterval(createHeart,500);
+
+/* Секрет */
+function openSecret(){
+    document.getElementById("secretScreen").style.display="block";
+    startTimer();
+    launchFireworks();
+}
+
+/* Таймер 90 дней */
+function startTimer(){
+const timerElement=document.getElementById("timer");
+    let startDate=localStorage.getItem("secretStart");
+
+    if(!startDate){
+        startDate=new Date().getTime();
+        localStorage.setItem("secretStart",startDate);
+    }else{
+        startDate=parseInt(startDate);
+    }
+
+const duration=90*24*60*60*1000;
+
+    function update(){
+const now=new Date().getTime();
+const diff=(startDate+duration)-now;
+
+        if(diff<=0){
+            timerElement.innerHTML="Мы вместе уже 3 месяца ❤️";
+            return;
+        }
+
+const days=Math.floor(diff/(1000*60*60*24));
+const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+const minutes=Math.floor((diff%(1000*60*60))/(1000*60));
+        timerElement.innerHTML=`До 3 месяцев: ${days}д ${hours}ч ${minutes}м`;
+    }
+    setInterval(update,60000);
+    update();
+}
+
+/* Фейерверк */
+function launchFireworks(){
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+
+    for(let i=0;i<120;i++){
+        setTimeout(()=>{
+                ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
+        ctx.beginPath();
+        ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,4,0,Math.PI*2);
+        ctx.fill();
+},i*25);
+    }
+    setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),4000);
+}
+
+</script>
+
+</body>
+</html>
